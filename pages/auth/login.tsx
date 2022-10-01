@@ -169,7 +169,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   if (session) {
     return {
       redirect: {
-        destination: page,
+        destination: page.toString(),
         permanent: false,
       },
     }

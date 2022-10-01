@@ -1,9 +1,9 @@
-import NextAuth from 'next-auth'
+import NextAuth, { NextAuthOptions } from 'next-auth'
 import GithubProvider from 'next-auth/providers/github'
 import Credentials from 'next-auth/providers/credentials'
 import { dbUsers } from '../../../database'
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
   providers: [
     // ...add more providers here
@@ -47,7 +47,7 @@ export const authOptions = {
   },
 
   callbacks: {
-    async jwt({ token, account, user }) {
+    async jwt({ token, account, user }: any) {
       if (account) {
         token.accessToken = account.access_token
         switch (account.type) {
@@ -67,7 +67,7 @@ export const authOptions = {
       return token
     },
 
-    async session({ session, token, user }) {
+    async session({ session, token, user }: any) {
       session.accessToken = token.accessToken
       session.user = token.user as any
 
