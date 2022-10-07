@@ -60,6 +60,7 @@ const OrderPage: NextPage<Props> = ({ order }) => {
     } catch (error) {
       console.log(error)
       setIsPaying(false)
+      alert('Error')
     }
   }
 
@@ -162,7 +163,6 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                       return actions.order!.capture().then((details) => {
                         // console.log({ details })
                         onOrderCompleted(details)
-                        const name = details.payer.name!.given_name
                       })
                     }}
                   />

@@ -1,7 +1,7 @@
-import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { db } from '../../../database'
+import axios from 'axios'
 import { IPaypal } from '../../../interfaces'
+import { db } from '../../../database'
 import { Order } from '../../../models'
 
 type Data = {
@@ -17,19 +17,18 @@ export default function handler(
       return payOrder(req, res)
 
     default:
-      res.status(200).json({ message: 'Bad request' })
+      return res.status(400).json({ message: 'Bad request' })
   }
 }
 
-const getPayPalBearerToken = async (): Promise<string | null> => {
-  const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+const getPaypalBearerToken = async (): Promise<string | null> => {
+  const PAYPAL_CLIENT = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
   const PAYPAL_SECRET = process.env.PAYPAL_SECRET
 
   const base64Token = Buffer.from(
-    `${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`,
+    `${PAYPAL_CLIENT}:${PAYPAL_SECRET}`,
     'utf-8'
   ).toString('base64')
-
   const body = new URLSearchParams('grant_type=client_credentials')
 
   try {
@@ -47,7 +46,7 @@ const getPayPalBearerToken = async (): Promise<string | null> => {
     return data.access_token
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data!)
+      console.log(error.response?.data)
     } else {
       console.log(error)
     }
@@ -57,12 +56,15 @@ const getPayPalBearerToken = async (): Promise<string | null> => {
 }
 
 const payOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  const paypalBearerToken = await getPayPalBearerToken()
+  // Todo: validar sesión del usuario
+  // TODO: validar mongoID
+
+  const paypalBearerToken = await getPaypalBearerToken()
 
   if (!paypalBearerToken) {
     return res
       .status(400)
-      .json({ message: 'No se pudo confirmar el token de Paypal' })
+      .json({ message: 'No se pudo confirmar el token de paypal' })
   }
 
   const { transactionId = '', orderId = '' } = req.body
@@ -81,26 +83,26 @@ const payOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   }
 
   await db.connect()
-
   const dbOrder = await Order.findById(orderId)
 
-  await db.disconnect()
-
   if (!dbOrder) {
+    await db.disconnect()
     return res
       .status(400)
-      .json({ message: 'Orden no identificada por nuestra base de datos' })
+      .json({ message: 'Orden no existe en nuestra base de datos' })
   }
 
   if (dbOrder.total !== Number(data.purchase_units[0].amount.value)) {
+    await db.disconnect()
     return res
       .status(400)
-      .json({ message: 'Los montos de Paypal y nuestra orden no coinciden' })
+      .json({ message: 'Los montos de PayPal y nuestra orden no son iguales' })
   }
 
-  //Ya pasó todas las validaciones --> update a la DB
   dbOrder.transactionId = transactionId
   dbOrder.isPaid = true
-  dbOrder.save()
+  await dbOrder.save()
+  await db.disconnect()
+
   return res.status(200).json({ message: 'Orden pagada' })
 }
