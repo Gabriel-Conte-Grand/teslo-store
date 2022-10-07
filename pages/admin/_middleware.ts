@@ -15,7 +15,7 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
 
   const validRoles = ['admin', 'SuperUser', 'SEO']
 
-  if (!validRoles.includes(session.user.role)) {
+  if (!validRoles.includes(session.data.user.role)) {
     return NextResponse.redirect('/')
   }
 
