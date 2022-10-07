@@ -114,7 +114,7 @@ const LoginPage = () => {
                 href={
                   destination === '/'
                     ? '/auth/register'
-                    : `auth/register/page=${destination}`
+                    : `/auth/register/page=${destination}`
                 }
                 passHref
               >
