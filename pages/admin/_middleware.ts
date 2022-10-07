@@ -13,10 +13,11 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
     return NextResponse.redirect(`/auth/login`)
   }
 
-  const validRoles = ['admin', 'SuperUser', 'SEO']
   console.log({ session })
-  if (!validRoles.includes(session.user.role)) {
-    return NextResponse.redirect('/')
+  if (session.user.role !== 'admin') {
+    const url = req.nextUrl.clone()
+    url.pathName = '/'
+    return NextResponse.rewrite(url)
   }
 
   return NextResponse.next()
