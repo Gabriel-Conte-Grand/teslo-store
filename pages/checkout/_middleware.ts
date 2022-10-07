@@ -9,7 +9,7 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
 
   if (!session) {
     const requestedPage = req.page.name
-    return NextResponse.redirect(`/auth/login?page=${requestedPage}`)
+    return NextResponse.redirect(`/auth/login?p=${requestedPage}`)
   }
 
   return NextResponse.next()
