@@ -1,10 +1,10 @@
-import { ChangeEvent, useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Box, Button, Chip, Grid, Typography } from '@mui/material'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { ShopLayout } from '../../components/layouts'
 import { ProductSlideShow, SizeSelector } from '../../components/products'
-import { ItemCounter, Loading } from '../../components/ui'
+import { ItemCounter } from '../../components/ui'
 import { ICartProduct, IProduct, ISize } from '../../interfaces'
 
 interface Props {

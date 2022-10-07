@@ -1,5 +1,14 @@
-import { ProductionQuantityLimitsOutlined } from '@mui/icons-material'
-import { CardMedia, Grid, Link as MaterialLink } from '@mui/material'
+import {
+  AddOutlined,
+  ProductionQuantityLimitsOutlined,
+} from '@mui/icons-material'
+import {
+  Box,
+  Button,
+  CardMedia,
+  Grid,
+  Link as MaterialLink,
+} from '@mui/material'
 import { NextPage } from 'next'
 import { AdminLayout } from '../../components/layouts'
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
@@ -18,7 +27,7 @@ const columns: GridColDef[] = [
             component='img'
             alt={row.title}
             className='fadeIn'
-            image={`/products/${row.img}`}
+            image={row.img}
           />
         </a>
       )
@@ -72,6 +81,15 @@ const ProductsPage: NextPage = () => {
       subTitle={'Mantenimiento de productos'}
       icon={<ProductionQuantityLimitsOutlined />}
     >
+      <Box display='flex' justifyContent='end' sx={{ mb: 2 }}>
+        <Button
+          startIcon={<AddOutlined />}
+          color='secondary'
+          href='/admin/products/new'
+        >
+          Crear Producto
+        </Button>
+      </Box>
       <Grid container className='fadeIn'>
         <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
           <DataGrid
