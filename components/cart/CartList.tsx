@@ -15,12 +15,6 @@ import { CartContext } from '../../context'
 import { ICartProduct, IOrderItem, IProduct } from '../../interfaces'
 import { ItemCounter } from '../ui'
 
-// const productsInCart = [
-//   initialData.products[0],
-//   initialData.products[21],
-//   initialData.products[44],
-// ]
-
 interface Props {
   editable?: boolean
   products?: IOrderItem[]
